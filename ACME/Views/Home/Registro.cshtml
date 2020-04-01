@@ -1,0 +1,283 @@
+﻿@{
+    
+    List<Pais> listaPaises = ViewBag.paises;
+    List<Ciudad> listaCiudades = ViewBag.ciudades;
+    List<Distrito> listaDistritos = ViewBag.distritos;
+    
+    
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        form {
+            border: 3px solid #f1f1f1;
+        }
+
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .espacio {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .pre {
+            margin-right: 10px;
+            margin-bottom: 16px;
+        }
+
+        .juntos {
+            display: flex;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .cancelbtn {
+            width: auto;
+            padding: 10px 18px;
+            background-color: #f44336;
+        }
+
+        .imgcontainer {
+            text-align: center;
+            margin: 24px 0 12px 0;
+        }
+
+        img.avatar {
+            width: 40%;
+            border-radius: 50%;
+        }
+
+
+        .container {
+            padding: 16px;
+        }
+
+        span.psw {
+            float: right;
+            padding-top: 16px;
+        }
+
+        /* Change styles for span and cancel button on extra small screens */
+        media screen and (max-width: 300px) {
+            span .psw
+
+        {
+            display: block;
+            float: none;
+        }
+
+        .cancelbtn {
+            width: 100%;
+        }
+        }
+    </style>
+
+ 
+
+</head>
+<body>
+
+    <h2>Registro</h2>
+
+    <form method="post" action="/Home/postregistro" onsubmit="return verifica_clave();">
+
+
+        <div class="container">
+
+            <label for="psw"><b>Nombre</b></label>
+            <input type="text" placeholder="Nombre" name="name" required>
+
+            <label for="psw"><b>Apellido</b></label>
+            <input type="text" placeholder="Apellido" name="lastname" required>
+
+            <label for="uname"><b>Email</b></label>
+            <input type="text" placeholder="Email" name="email" required>
+
+            <label for="psw"><b>Contraseña</b></label>
+            <input type="password" placeholder="Contraseña" name="psw" maxlength="11" minlenght="8" min="1" required>
+
+            <script src="~/js/jquery-3.4.1.min.js"></script>
+
+
+            <script>
+                $(document).ready(function () {
+
+                    $("#cmbPais").change(function () {
+                        $.get("/Home/GetCiudades", { idPais: $('#cmbPais').val() }, function (data) {
+                            $("#cmbCiudad").empty();
+                            $.each(data, function (Registro, row) {
+                                $("#cmbCiudad").append("<option value='" + row.IdCiudad + "'>" + row.NombreCiudad + "</option>")
+                            });
+                        });
+                    });
+                });
+            </script>
+
+            <script>
+                $(document).ready(function () {
+
+                    $("#cmbCiudad").change(function () {
+                        $.get("/Home/GetDistritos", { idCiudad: 1, idPais: 1 }, function (data) {
+                            $("#cmbDistrito").empty();
+                            $.each(data, function (Registro, row) {
+                                $("#cmbDistrito").append("<option value='" + row.iddistrito + "'>" + row.Nombredistrito + "</option>")
+                            });
+                        });
+                    });
+                });
+            </script>
+            <!--
+         idCiudad: $('#cmbCiudad').val(), idPais: $('#cmbPais').val()
+    -->
+
+            <div class="espacio">
+                <label for="psw"><b>Pais</b></label>
+
+
+
+                <select id="cmbPais" class="form-control">
+
+                    <option value="seleccionar">Seleccione un Pais</option>
+
+                    @foreach (var item in listaPaises)
+                    {
+                        <option value="@item.IdPais">@item.NombrePais</option>
+                    }
+                </select>
+            </div>
+
+            <div class="espacio">
+                <label for="psw"><b>Ciudad</b></label>
+
+
+                <select id="cmbCiudad" class="form-control"></select>
+            </div>
+
+            <div class="espacio">
+                <label for="psw"><b>Distrito</b></label>
+
+                <select id="cmbDistrito" class="form-control">
+
+                    <option value="Selecione un Distrito"></option>
+
+                </select>
+            </div>
+
+
+
+
+            <label for="psw"><b>Preguntas</b></label>
+            <div class="espacio">
+
+                <select class="form-control" id="pregunta" name="pregunta">
+
+
+                    @{
+                        Procesos p = new Procesos();
+                        string[] preguntas = new string[10];
+                        preguntas = p.llenarbox();
+
+                        for (int i = 0; i < preguntas.Length; i++)
+                        {
+                            <option value="@preguntas[i]">@preguntas[i]</option>
+                        }
+
+
+
+                    }
+
+                </select>
+
+                <input type="text" placeholder="Respuesta" name="respuesta" required>
+
+            </div>
+
+            <div class="espacio">
+
+                <select class="form-control" id="pregunta2" name="pregunta2">
+
+
+                    @{
+
+
+                        preguntas = p.llenarbox();
+
+                        for (int i = 0; i < preguntas.Length; i++)
+                        {
+                            <option value="@preguntas[i]">@preguntas[i]</option>
+                        }
+
+
+
+                    }
+
+                </select>
+
+                <input type="text" placeholder="Respuesta" name="respuesta2" required>
+
+            </div>
+
+            <div class="espacio">
+
+                <select class="form-control" id="pregunta3" name="pregunta3">
+
+
+                    @{
+
+                        preguntas = p.llenarbox();
+
+                        for (int i = 0; i < preguntas.Length; i++)
+                        {
+                            <option value="@preguntas[i]">@preguntas[i]</option>
+                        }
+
+
+
+                    }
+
+                </select>
+
+                <input type="text" placeholder="Respuesta" name="respuesta3" required>
+
+            </div>
+
+
+
+
+            <button type="submit">Registro</button>
+
+            <div id="mensaje"><!-- mensaje de error --></div>
+        </div>
+
+
+    </form>
+
+</body>
+</html>
